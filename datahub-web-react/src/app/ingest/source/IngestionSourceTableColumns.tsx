@@ -1,5 +1,5 @@
 import { blue } from '@ant-design/colors';
-import { Dropdown, Image, Typography } from 'antd';
+import { Dropdown, Image, Typography, message } from 'antd';
 import { Tooltip, Button } from '@components';
 import { colors, typography } from '@src/alchemy-components';
 import { Copy, PencilSimple, Trash, DotsThreeVertical, Code } from 'phosphor-react';
@@ -43,6 +43,16 @@ const ActionButtonContainer = styled.div`
 `;
 
 const StyledDotsThreeVertical = styled(DotsThreeVertical)`
+    color: ${colors.gray[1800]};
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+
+    &:hover {
+        color: ${colors.violet[500]};
+    }
+`;
+
+const StyledCopy = styled(Copy)`
     color: ${colors.gray[1800]};
     cursor: pointer;
     transition: color 0.2s ease-in-out;
@@ -209,7 +219,18 @@ export function ActionsColumn({
         {
             key: 'copy',
             label: (
-                <MenuItem onClick={() => navigator.clipboard?.writeText(record.urn)} data-test-id="copy-urn-action">
+                <MenuItem 
+                    onClick={() => {
+                        navigator.clipboard?.writeText(record.urn)
+                            .then(() => {
+                                message.success('Copied');
+                            })
+                            .catch(() => {
+                                message.error('Failed to copy');
+                            });
+                    }} 
+                    data-test-id="copy-urn-action"
+                >
                     <Copy weight="regular" size={16} />
                     Copy URN
                 </MenuItem>

@@ -1,8 +1,9 @@
 import React from 'react';
-import { CopyOutlined } from '@ant-design/icons';
-import { Button, Typography } from 'antd';
+import { Button, Typography, message } from 'antd';
 import { Text, Tooltip } from '@components';
 import styled from 'styled-components';
+import { colors } from '@src/alchemy-components';
+import { Copy } from 'phosphor-react';
 import CustomAvatar from '@src/app/shared/avatar/CustomAvatar';
 import { Link } from 'react-router-dom';
 import { CreatedByContainer } from '@src/app/govern/structuredProperties/styledComponents';
@@ -39,6 +40,16 @@ const StatusContainer = styled.div`
 const StatusButton = styled(Button)`
     padding: 0px;
     margin: 0px;
+`;
+
+const StyledCopy = styled(Copy)`
+    color: ${colors.gray[1800]};
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+
+    &:hover {
+        color: ${colors.violet[500]};
+    }
 `;
 
 export function TimeColumn(time: string) {
@@ -121,30 +132,36 @@ export function ButtonsColumn({
     handleRollbackExecution,
 }: ButtonsColumnProps) {
     return (
-        <div style={{ display: 'flex', justifyContent: 'right' }}>
+        <div style={{ display: 'flex', justifyContent: 'right', alignItems: 'center', gap: '16px' }}>
             {record.urn && navigator.clipboard && (
                 <Tooltip title="Copy Execution Request URN">
-                    <Button
-                        style={{ marginRight: 16 }}
-                        icon={<CopyOutlined />}
+                    <StyledCopy 
+                        size={16} 
+                        weight="regular" 
                         onClick={() => {
-                            navigator.clipboard.writeText(record.urn);
+                            navigator.clipboard.writeText(record.urn)
+                                .then(() => {
+                                    message.success('Copied to clipboard');
+                                })
+                                .catch(() => {
+                                    message.error('Failed to copy to clipboard');
+                                });
                         }}
                     />
                 </Tooltip>
             )}
             {record.duration && (
-                <Button style={{ marginRight: 16 }} onClick={() => handleViewDetails(record.urn)}>
+                <Button onClick={() => handleViewDetails(record.urn)}>
                     DETAILS
                 </Button>
             )}
             {record.status === RUNNING && (
-                <Button style={{ marginRight: 16 }} onClick={() => handleCancelExecution(record.urn)}>
+                <Button onClick={() => handleCancelExecution(record.urn)}>
                     CANCEL
                 </Button>
             )}
             {record.status === SUCCESS && record.showRollback && (
-                <Button style={{ marginRight: 16 }} onClick={() => handleRollbackExecution(record.id)}>
+                <Button onClick={() => handleRollbackExecution(record.id)}>
                     ROLLBACK
                 </Button>
             )}

@@ -48,6 +48,8 @@ const StyledTabToolbar = styled(TabToolbar)`
         padding: 8px 0;
         height: auto;
         box-shadow: none;
+        border: none;
+        margin-bottom: 0;
     }
 `;
 

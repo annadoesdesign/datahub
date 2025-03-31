@@ -25,6 +25,12 @@ const StyledSourceTable = styled(StyledTable)`
             background-color: ${ANTD_GRAY[2]} !important;
         }
     }
+
+    &&& .ant-table-column-title,
+    &&& .ant-table-thead .ant-table-cell {
+        font-size: 12px;
+        font-weight: 700;
+    }
 ` as typeof StyledTable;
 
 const StyledSourceTableWithNavBarRedesign = styled(StyledSourceTable)`
