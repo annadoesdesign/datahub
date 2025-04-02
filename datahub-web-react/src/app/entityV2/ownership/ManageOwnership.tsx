@@ -57,7 +57,7 @@ export const ManageOwnership = () => {
     return (
         <PageContainer>
             <HeaderContainer>
-                <PageTitle title="Manage Ownership" subTitle="Create, edit, and remove custom Ownership Types." />
+                <PageTitle title="Manage Ownership" subTitle="Create, edit, and remove custom ownership types" />
                 <Button variant="filled" onClick={onClickCreateOwnershipType} data-testid="create-owner-type-v2">
                     <Plus /> Create Ownership Type
                 </Button>
