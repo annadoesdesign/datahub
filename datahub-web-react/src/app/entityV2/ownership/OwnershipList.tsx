@@ -68,10 +68,10 @@ export const OwnershipList = () => {
                 })}
             <SearchBarContainer>
                 <SearchBar
-                    placeholder="Search tags..."
+                    placeholder="Search..."
                     value={query}
                     onChange={(e) => setQuery(e)}
-                    data-testid="tag-search-input"
+                    data-testid="ownership-type-search-input"
                     width="280px"
                 />
             </SearchBarContainer>
