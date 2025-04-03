@@ -1,6 +1,7 @@
 import React from 'react';
-import { Dropdown, MenuProps, Popconfirm, Typography, message, notification } from 'antd';
-import { CopyOutlined, DeleteOutlined, EditOutlined, MoreOutlined } from '@ant-design/icons';
+import { Dropdown, MenuProps, Popconfirm, message, notification } from 'antd';
+import { DotsThreeOutlineVertical } from 'phosphor-react';
+import { colors } from '@components/theme';
 import styled from 'styled-components/macro';
 import { OwnershipTypeEntity } from '../../../../types.generated';
 import { useDeleteOwnershipTypeMutation } from '../../../../graphql/ownership.generated';
@@ -9,30 +10,26 @@ const DROPDOWN_TEST_ID = 'ownership-table-dropdown';
 const EDIT_OWNERSHIP_TYPE_TEST_ID = 'edit-ownership-type';
 const DELETE_OWNERSHIP_TYPE_TEST_ID = 'delete-ownership-type';
 
-const StyledDropdown = styled(Dropdown)``;
-
-const MenuButtonContainer = styled.div`
+const ActionContainer = styled.div`
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-end;
 `;
 
-const MenuButtonText = styled(Typography.Text)`
+const MenuItem = styled.div`
+    display: flex;
+    padding: 4px 20px 4px 5px;
     font-size: 14px;
     font-weight: 400;
-    margin-left: 8px;
+    color: ${colors.gray[1700]};
 `;
 
-const StyledMoreOutlined = styled(MoreOutlined)`
-    width: 20px;
-    &&& {
-        padding-left: 0px;
-        padding-right: 0px;
-        font-size: 18px;
-    }
-    :hover {
-        cursor: pointer;
-    }
+const DeleteMenuItem = styled(MenuItem)`
+    color: ${colors.red[600]};
+`;
+
+const StyledDotsThree = styled(DotsThreeOutlineVertical)`
+    cursor: pointer;
+    color: ${colors.gray[1800]};
 `;
 
 type Props = {
@@ -50,6 +47,7 @@ export const ActionsColumn = ({ ownershipType, setIsOpen, setOwnershipType, refe
 
     const onCopy = () => {
         navigator.clipboard.writeText(ownershipType.urn);
+        message.success('URN copied to clipboard');
     };
 
     const [deleteOwnershipTypeMutation] = useDeleteOwnershipTypeMutation();
@@ -85,59 +83,37 @@ export const ActionsColumn = ({ ownershipType, setIsOpen, setOwnershipType, refe
     const items: MenuProps['items'] = [
         {
             key: 'edit',
-            icon: (
-                <MenuButtonContainer data-testid={EDIT_OWNERSHIP_TYPE_TEST_ID}>
-                    <EditOutlined />
-                    <MenuButtonText>Edit</MenuButtonText>
-                </MenuButtonContainer>
-            ),
+            label: <MenuItem onClick={editOnClick}>Edit</MenuItem>,
+        },
+        {
+            key: 'copy',
+            label: <MenuItem onClick={onCopy}>Copy URN</MenuItem>,
         },
         {
             key: 'delete',
-            icon: (
+            label: (
                 <Popconfirm
-                    title={<Typography.Text>Are you sure you want to delete this ownership type?</Typography.Text>}
+                    title="Are you sure you want to delete this ownership type?"
                     placement="left"
-                    onCancel={() => {}}
                     onConfirm={onDelete}
                     okText="Yes"
                     cancelText="No"
                 >
-                    <MenuButtonContainer data-testid={DELETE_OWNERSHIP_TYPE_TEST_ID}>
-                        <DeleteOutlined />
-                        <MenuButtonText>Delete</MenuButtonText>
-                    </MenuButtonContainer>
+                    <DeleteMenuItem data-testid={DELETE_OWNERSHIP_TYPE_TEST_ID}>Delete</DeleteMenuItem>
                 </Popconfirm>
-            ),
-        },
-        {
-            key: 'copy',
-            icon: (
-                <MenuButtonContainer>
-                    <CopyOutlined />
-                    <MenuButtonText>Copy Urn</MenuButtonText>
-                </MenuButtonContainer>
             ),
         },
     ];
 
-    const onClick: MenuProps['onClick'] = (e) => {
-        const key = e.key as string;
-        if (key === 'edit') {
-            editOnClick();
-        } else if (key === 'copy') {
-            onCopy();
-        }
-    };
-
     const menuProps: MenuProps = {
         items,
-        onClick,
     };
 
     return (
-        <StyledDropdown menu={menuProps}>
-            <StyledMoreOutlined data-testid={DROPDOWN_TEST_ID} style={{ display: undefined }} />
-        </StyledDropdown>
+        <ActionContainer>
+            <Dropdown menu={menuProps} trigger={['click']}>
+                <StyledDotsThree size={16} weight="fill" data-testid={DROPDOWN_TEST_ID} />
+            </Dropdown>
+        </ActionContainer>
     );
 };

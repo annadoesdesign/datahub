@@ -1,11 +1,13 @@
 import React from 'react';
-import { Typography } from 'antd';
 import styled from 'styled-components/macro';
+import { colors } from '@components';
 import { OwnershipTypeEntity } from '../../../../types.generated';
 
-const DescriptionText = styled(Typography.Text)`
-    font-size: 12px;
+const PropDescription = styled.div`
+    font-size: 14px;
     font-weight: 400;
+    color: ${colors.gray[1700]};
+    line-height: normal;
 `;
 
 type Props = {
@@ -15,5 +17,5 @@ type Props = {
 export const DescriptionColumn = ({ ownershipType }: Props) => {
     const description = ownershipType?.info?.description || '';
 
-    return <DescriptionText>{description}</DescriptionText>;
+    return <PropDescription>{description}</PropDescription>;
 };

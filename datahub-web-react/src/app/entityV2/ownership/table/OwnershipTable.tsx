@@ -1,10 +1,18 @@
 import React from 'react';
 import { Empty } from 'antd';
+import { Table } from '@components';
+import styled from 'styled-components';
+import { AlignmentOptions } from '@src/alchemy-components/theme/config';
 import { OwnershipTypeEntity } from '../../../../types.generated';
-import { StyledTable } from '../../shared/components/styled/StyledTable';
 import { NameColumn } from './NameColumn';
 import { DescriptionColumn } from './DescriptionColumn';
 import { ActionsColumn } from './ActionsColumn';
+
+const TableContainer = styled.div`
+    display: flex;
+    flex: 1;
+    overflow: auto;
+`;
 
 type Props = {
     ownershipTypes: OwnershipTypeEntity[];
@@ -17,21 +25,22 @@ export const OwnershipTable = ({ ownershipTypes, setIsOpen, setOwnershipType, re
     const tableColumns = [
         {
             title: 'Name',
-            dataIndex: 'name',
-            sorter: (a: any, b: any) => a?.info?.name?.localeCompare(b?.info?.name),
             key: 'name',
-            render: (_, record: any) => <NameColumn ownershipType={record} />,
+            render: (record: OwnershipTypeEntity) => <NameColumn ownershipType={record} />,
+            sorter: (a: OwnershipTypeEntity, b: OwnershipTypeEntity) =>
+                (a?.info?.name || '').localeCompare(b?.info?.name || ''),
+            width: '40%',
         },
         {
             title: 'Description',
-            dataIndex: 'description',
             key: 'description',
-            render: (_, record: any) => <DescriptionColumn ownershipType={record} />,
+            render: (record: OwnershipTypeEntity) => <DescriptionColumn ownershipType={record} />,
+            width: '50%',
         },
         {
-            dataIndex: 'actions',
+            title: '',
             key: 'actions',
-            render: (_, record: any) => (
+            render: (record: OwnershipTypeEntity) => (
                 <ActionsColumn
                     ownershipType={record}
                     setIsOpen={setIsOpen}
@@ -39,6 +48,8 @@ export const OwnershipTable = ({ ownershipTypes, setIsOpen, setOwnershipType, re
                     refetch={refetch}
                 />
             ),
+            width: '10%',
+            alignment: 'right' as AlignmentOptions,
         },
     ];
 
@@ -46,15 +57,13 @@ export const OwnershipTable = ({ ownershipTypes, setIsOpen, setOwnershipType, re
         return ownershipType?.info?.name || ownershipType.urn;
     };
 
+    if (ownershipTypes.length === 0) {
+        return <Empty description="No Ownership Types found!" image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+    }
+
     return (
-        <StyledTable
-            columns={tableColumns}
-            dataSource={ownershipTypes}
-            rowKey={getRowKey}
-            locale={{
-                emptyText: <Empty description="No Ownership Types found!" image={Empty.PRESENTED_IMAGE_SIMPLE} />,
-            }}
-            pagination={false}
-        />
+        <TableContainer>
+            <Table columns={tableColumns} data={ownershipTypes} rowKey={getRowKey} />
+        </TableContainer>
     );
 };

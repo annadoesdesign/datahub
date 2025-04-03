@@ -1,11 +1,24 @@
 import React from 'react';
-import { Typography } from 'antd';
 import styled from 'styled-components/macro';
+import { colors } from '@components';
 import { OwnershipTypeEntity } from '../../../../types.generated';
 
-const NameText = styled(Typography.Text)`
-    font-size: 12px;
-    font-weight: 700;
+const NameContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+`;
+
+const PropName = styled.div`
+    font-size: 14px;
+    font-weight: 600;
+    color: ${colors.gray[600]};
+    line-height: normal;
+
+    :hover {
+        cursor: pointer;
+        text-decoration: underline;
+    }
 `;
 
 type Props = {
@@ -15,5 +28,9 @@ type Props = {
 export const NameColumn = ({ ownershipType }: Props) => {
     const name = ownershipType?.info?.name || ownershipType?.urn;
 
-    return <NameText>{name}</NameText>;
+    return (
+        <NameContainer>
+            <PropName>{name}</PropName>
+        </NameContainer>
+    );
 };
